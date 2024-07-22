@@ -6,41 +6,38 @@ on:
   workflow_dispatch:
 
 jobs:
-  sync-file:
+  update-playlist:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout private repository
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'  # Specify the version of Node.js you need
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    - name: Install dependencies
-      run: |
-        npm install node-fetch  # Install the necessary dependencies
+      - name: Install Dependencies
+        run: npm install node-fetch@2 winston
 
-    - name: Run script
-      run: |
-        node run.js  # Replace with your script name
+      - name: Run Script
+        run: node run.js
 
-    - name: Clone public repository
-      run: |
-        git clone https://github.com/Siva2webdev/TataplayAuto.git
+      - name: Clone public repository
+        run: |
+         git clone https://github.com/Siva2webdev/TataplayAuto.git
 
-    - name: Copy output file to public repository
-      run: |
-        cp ts.m3u TataplayAuto/  # Replace output_file.txt with your file name
+      - name: Copy output file to public repository
+        run: |
+         cp ts.m3u TataplayAuto/  # Replace output_file.txt with your file name
 
-    - name: Commit and push changes to public repository
-      run: |
-        cd TataplayAuto
-        git config --global user.name 'github-actions'
-        git config --global user.email 'github-actions@github.com'
-        git add ts.m3u  # Replace output_file.txt with your file name
-        git commit -m 'Update ts.m3u'  # Replace output_file.txt with your file name
-        git push https://${{ secrets.BINDAAS }}@github.com/Siva2webdev/TataplayAuto.git
-      env:
-        GITHUB_TOKEN: ${{ secrets.BINDAAS }}
+      - name: Commit and push changes to public repository
+        run: |
+         cd TataplayAuto
+         git config --global user.name 'github-actions'
+         git config --global user.email 'github-actions@github.com'
+         git add ts.m3u  # Replace output_file.txt with your file name
+         git commit -m 'Update ts.m3u'  # Replace output_file.txt with your file name
+         git push https://${{ secrets.BINDAAS }}@github.com/Siva2webdev/TataplayAuto.git
+        env:
+         GITHUB_TOKEN: ${{ secrets.BINDAAS }}
