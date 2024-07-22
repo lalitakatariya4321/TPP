@@ -2,7 +2,7 @@ name: Update M3U8 Playlist
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: ' */5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -23,25 +23,15 @@ jobs:
       - name: Run Script
         run: node run.js
 
-      - name: Clone public repository
-        run: |
-          git clone https://github.com/Siva2webdev/TataplayAuto.git
-
-      - name: Copy output file to public repository
-        run: |
-          cp ts.m3u TataplayAuto/
-
       - name: Configure git user
         run: |
           git config --global user.name 'Siva2webdev'
           git config --global user.email "${{ secrets.USER_EMAIL }}"
 
-      - name: Commit and Push Changes to Public Repository
+      - name: Commit and Push Changes
         run: |
-          cd TataplayAuto
           git add ts.m3u
           git commit -m 'Update M3U8 playlist'
-          git remote set-url origin https://x-access-token:${{ secrets.BINDAAS }}@github.com/Siva2webdev/TataplayAuto.git
-          git push origin main
+          git push origin ${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.BINDAAS }}
