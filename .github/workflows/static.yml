@@ -1,46 +1,46 @@
-name: Update M3U8 Playlist
+name: Sync File to Public Repository
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'  # Adjust the cron schedule as needed
   workflow_dispatch:
 
 jobs:
-  update-playlist:
+  sync-file:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+    - name: Checkout private repository
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # Specify the version of Node.js you need
 
-      - name: Install Dependencies
-        run: npm install node-fetch@2 winston
+    - name: Install dependencies
+      run: |
+        npm install
 
-      - name: Run Script
-        run: node run.js
+    - name: Run script
+      run: |
+        node run.js  # Replace with your script name
 
-      - name: Configure git user
-        run: |
-          git config --global user.name 'Siva2webdev'
-          git config --global user.email "${{ secrets.USER_EMAIL }}"
+    - name: Clone public repository
+      run: |
+        git clone https://github.com/Siva2webdev/TataplayAuto.git
 
-      - name: Commit and Push Changes
-        run: |
-          git add ts.m3u
-          git commit -m 'Update M3U8 playlist'
-          git push origin ${{ github.ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.BINDAAS }}
+    - name: Copy output file to public repository
+      run: |
+        cp ts.m3u TataplayAuto/  # Replace output_file.txt with your file name
 
-      - name: Trigger Second Workflow
-        run: |
-          curl -X POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          https://api.github.com/repos/${{ github.repository }}/dispatches \
-          --data '{"event_type":"trigger-jekyll-build"}'
+    - name: Commit and push changes to public repository
+      run: |
+        cd TataplayAuto
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add ts.m3u  # Replace output_file.txt with your file name
+        git commit -m 'Update ts.m3u'  # Replace output_file.txt with your file name
+        git push https://${{ secrets.BINDAAS }}@github.com/Siva2webdev/TataplayAuto.git
+      env:
+        GITHUB_TOKEN: ${{ secrets.BINDAAS }}
