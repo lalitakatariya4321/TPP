@@ -38,6 +38,6 @@ jobs:
          git config --global user.email 'github-actions@github.com'
          git add ts.m3u  # Replace output_file.txt with your file name
          git commit -m 'Update ts.m3u'  # Replace output_file.txt with your file name
-         git push https://${{ secrets.BINDAAS }}@github.com/Siva2webdev/TataplayAuto.git
+         git push https://${{ GITHUB_TOKEN }}@github.com/Siva2webdev/TataplayAuto.git
         env:
          GITHUB_TOKEN: ${{ secrets.BINDAAS }}
