@@ -18,6 +18,10 @@ jobs:
       with:
         node-version: '16'  # Specify the version of Node.js you need
 
+    - name: Install dependencies
+      run: |
+        npm install node-fetch  # Install the necessary dependencies
+
     - name: Run script
       run: |
         node run.js  # Replace with your script name
